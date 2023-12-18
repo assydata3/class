@@ -91,6 +91,14 @@ class mailer {
         return $list_email ; 
     }
 
+
+    public function delete_email_control($no){
+        $connection  = new conn_db() ; 
+        $connect = $connection->conn_test() ; 
+        $sql_delete_data = "DELETE FROM `email_control` WHERE (`no` like '$no')"; 
+        mysqli_query($connect,$sql_delete_data); 
+    }
+
     
     public function update_email_list_control($name,$dept,$email,$remark,$day,$month,$year,$no){
         $connection  = new conn_db() ; 
