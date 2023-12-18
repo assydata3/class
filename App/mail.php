@@ -57,15 +57,15 @@ class mailer {
 
 
     #### 3.Special User
-    private $mail_admin_1      = 'tung_phung@minebea-as.com' ; 
-    private $mail_admin_2      = 'duc_vu@minebea-as.com' ; 
-    private $mail_admin_hr     = 'vanltt@minebea-as.com' ;
+    public $mail_admin_1      = 'tung_phung@minebea-as.com' ; 
+    public $mail_admin_2      = 'duc_vu@minebea-as.com' ; 
+    public $mail_admin_hr     = 'vanltt@minebea-as.com' ;
 
-    private $mail_factory_gm_1 = 'akio_ueda@minebea-as.com';
-    private $mail_vn_gm        = 'thangdk@minebea-as.com';
-    private $mail_quality_gm   = 'kenji_nakamura@minebea-as.com';
-    private $mail_quality_mgr  = 'tran_quy_cuong@minebea-as.com';
-    private $mail_oee_pic      = 'thanhld@minebea-as.com';
+    public $mail_factory_gm_1 = 'akio_ueda@minebea-as.com';
+    public $mail_vn_gm        = 'thangdk@minebea-as.com';
+    public $mail_quality_gm   = 'kenji_nakamura@minebea-as.com';
+    public $mail_quality_mgr  = 'tran_quy_cuong@minebea-as.com';
+    public $mail_oee_pic      = 'thanhld@minebea-as.com';
 
    
     #### LIST AND UPDATE LIST EMAIL CONTROL 
