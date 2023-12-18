@@ -154,9 +154,15 @@ class conn_db{
    }
 
    public function conn_test(){
-      $connect = mysqli_connect('localhost','root','','test'); 
+      $host = self::host_assy3 ; 
+      $user = self::assy3_user ; 
+      $pass = self::assy3_pass ;
+      $db = 'test' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
+
       return $connect ; 
    }
+
 
    public function conn_test8(){
       $connect = mysqli_connect('localhost','root','','test8'); 
