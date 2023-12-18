@@ -87,6 +87,7 @@ class mailer {
         $list_email[$e]['year_birth']  = $row_list_all['year_birth']; 
         $list_email[$e]['remark']      = $row_list_all['remark']; 			
         }
+        $list_email['count']['value'] = $e ; 
         return $list_email ; 
     }
 
