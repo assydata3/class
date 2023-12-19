@@ -149,6 +149,7 @@ class conn_db{
 
 
    public function conn_report(){
+      ## new 
       $host = self::host_assy3 ; 
       $user = self::assy3_user ; 
       $pass = self::assy3_pass ;
