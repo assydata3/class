@@ -149,8 +149,13 @@ class conn_db{
 
 
    public function conn_report(){
-      $connect = mysqli_connect('localhost','root','','report'); 
+      $host = self::host_assy3 ; 
+      $user = self::assy3_user ; 
+      $pass = self::assy3_pass ;
+      $db = 'report' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
       return $connect ; 
+ 
    }
 
    public function conn_test(){
