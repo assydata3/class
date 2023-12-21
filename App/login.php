@@ -23,6 +23,29 @@ class login{
    }
 
 
+   public function  require_login_level($url_login,$level){
+      $host = $_SERVER['HTTP_HOST'] ; 
+      $current_domain = "http://$host";
+      $infor = array() ; 
+
+
+      ob_start();
+      session_start();
+      $path_name   = $_SERVER['REQUEST_URI']; 
+      if(!isset($_SESSION['is_login'])){
+         header("Location: $url_login?path=$path_name");  
+      }
+      else{
+         $user = $_SESSION['user_login'];
+         $user_level = $_SESSION['level'];
+         if($user_level > $level ){
+            header("Location: $current_domain/deny_access.php") ; 
+         }
+      }
+      return $infor ; 
+   }
+
+
    
     public function check_login($user,$pass){
        $current_host = $_SERVER['HTTP_HOST'];
@@ -47,12 +70,14 @@ class login{
           $sql = "SELECT * FROM user_table WHERE(user like '$user')";
           $result = mysqli_query($connect, $sql);
           $row = mysqli_fetch_assoc($result);
-          $pass_find = $row['password'] ; 
+          $pass_find  = $row['password'] ; 
+          $user_level = $row['level'] ; 
           if($pass_find == $pass){
               $status  = True ; 
               $message = '' ; 
               $_SESSION['is_login'] = TRUE;
-			  $_SESSION['user_login'] = $user; 
+			     $_SESSION['user_login'] = $user; 
+              $_SESSION['level'] = $user_level; 
           }
           else {
              $message   = "Tên đăng nhập hoặc mật khẩu không chính xác" ; 
