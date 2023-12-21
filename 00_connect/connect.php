@@ -25,7 +25,11 @@ class conn_db{
 
 
    public function conn_assy2(){
-      $connect = mysqli_connect('localhost','root','','assy_2'); 
+      $host = self::host_assy3 ; 
+      $user = self::assy3_user ; 
+      $pass = self::assy3_pass ;
+      $db = 'assy_2' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
       return $connect ; 
    }
 
@@ -153,6 +157,17 @@ class conn_db{
       $host = self::host_assy3 ; 
       $user = self::assy3_user ; 
       $pass = self::assy3_pass ;
+      $db = 'report' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
+      return $connect ; 
+
+   }
+
+   public function conn_report_2(){
+      ## new 
+      $host = self::host_local ; 
+      $user = self::local_admin ; 
+      $pass = self::local_pass ;
       $db = 'report' ; 
       $connect = mysqli_connect($host ,$user,$pass,$db); 
       return $connect ; 
