@@ -288,6 +288,103 @@ class daily_report{
         $sql_del_defect_daily = "DELETE FROM `daily_defect_report` WHERE(`record_no` like '$record_no')"; 
         mysqli_query($connect, $sql_del_defect_daily); 
     }
+
+
+
+
+    ### Su dung cho trang Review defect 
+
+    public function defect_model_rate($defect_code,$start_date,$end_date,$type){
+        $connection = new conn_db() ;
+        $data_total = array() ; $k = 0 ; 
+        $connect   = $connection->conn_report() ; 
+        $sql = "SELECT model , sum($type) as sum 
+        FROM daily_defect_report 
+        WHERE 
+        (date between '$start_date' and '$end_date')
+        and defect_code = '$defect_code'
+        Group by model 
+        ORDER BY sum DESC" ; 
+
+        $result = mysqli_query($connect,$sql); 
+        while($row=mysqli_fetch_array($result)){
+            $k ++ ; 
+            $data_total[$k]['model'] = $row['model'] ;
+            $data_total[$k]['qty'] = $row['sum'] ; 
+
+        }
+        $data_total['count']['value'] = $k ; 
+        return $data_total ;
+    }
+
+
+    public function defect_model_detail_table($defect_code,$start_date,$end_date,$type){
+        $connection = new conn_db() ;
+        $data_total = array() ; $k = 0 ; 
+        $connect   = $connection->conn_report() ; 
+        $sql = "WITH CTE_DATA AS (
+        SELECT date , area , line , model , sum($type) as NG , 
+        (SELECT sum(actual) From daily_production_report WHERE pro_date = db.date and line = db.line and line = db.line and model = db.model ) as sanluong
+        FROM daily_defect_report as db 
+        WHERE 
+        (date between '$start_date' and '$end_date') 
+        and defect_code = '$defect_code'
+        group by date , area , line , model 
+        order by date )
+        
+        SELECT * , 
+        Round(NG/sanluong*100,2) as rate
+        FROM CTE_DATA" ; 
+
+        $result = mysqli_query($connect,$sql) ; 
+        $data_total = array() ; $k = 0 ; 
+        while($row =  mysqli_fetch_assoc($result)){
+                 $k++ ; 
+                 $data_total[$k]["date"]   = $row["date"] ;
+                 $data_total[$k]["line"]   = $row["line"] ;
+                 $data_total[$k]["model"]  = $row["model"] ;
+                 $data_total[$k]["ng"]     = $row["NG"] ;
+                 $data_total[$k]["sanluong"]    = $row["sanluong"] ;
+                 $data_total[$k]["rate"]    = $row["rate"] ;
+        }
+        $data_total["count"]["value"] = $k ;
+        return $data_total ; 
+    }
+
+
+
+
+    public function summary_defect_code_by_date($defect_code,$start_date,$end_date,$type){
+        $connection = new conn_db() ;
+        $data_total = array() ; $k = 0 ; 
+        $connect   = $connection->conn_report() ; 
+        $sql = "WITH CTE_DATA AS (
+            SELECT date , area , line , model , sum($type) as NG , 
+            (SELECT sum(actual) From daily_production_report WHERE pro_date = db.date and line = db.line and line = db.line and model = db.model ) as sanluong
+            FROM daily_defect_report as db 
+            WHERE 
+            (date between '$start_date' and '$end_date') 
+            and defect_code = '$defect_code'
+            group by date , area , line , model 
+            order by date )
+            
+            SELECT date , sum(NG) as ng_total  , sum(sanluong) as sanluong_total , round(sum(NG)/SUM(SANLUONG),5) as rate_total
+            FROM CTE_DATA 
+            GROUP BY date " ; 
+
+        $result = mysqli_query($connect,$sql) ; 
+        $data_total = array() ; $k = 0 ; 
+        while($row =  mysqli_fetch_assoc($result)){
+                 $k++ ; 
+                 $data_total[$k]["date"]           = $row["date"] ;
+                 $data_total[$k]["ng_total"]       = $row["ng_total"] ;
+                 $data_total[$k]["sanluong_total"] = $row["sanluong_total"] ;
+                 $data_total[$k]["rate_total"]     = $row["rate_total"] ;
+            
+        }
+        $data_total["count"]["value"] = $k ;
+        return $data_total ; 
+    }
 }
 
 

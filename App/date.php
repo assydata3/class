@@ -4,7 +4,7 @@ require_once __DIR__.'/../00_connect/connect.php' ;
 use Connect\connect\conn_db;
 
 class date_data{
-    public function fist_day($date){
+    public function first_day($date){
         $fist_day = date_create($date)
         ->modify('first day of this month')
         ->format('Y-m-d');
