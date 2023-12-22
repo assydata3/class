@@ -100,6 +100,7 @@ class daily_report{
             SELECT date , no_1, area , line , model , code , defect_code, defect_name,ng_qty , ok_return , result, check_show,
             (SELECT SUM(actual) FROM daily_production_report WHERE area = db.area and  line = db.line and model = db.model and pro_date = '$pro_date') as sanluong , 
             (SELECT SUM(result) FROM daily_defect_report WHERE area = db.area and  line = db.line and model = db.model and date = '$pro_date') as tong_ng ,
+            (SELECT jp_name from assy.defect_code WHERE defect_code like db.defect_code) as df_jp_name, 
             dense_rank() over(order by area , line , model DESC) as group_data
             FROM daily_defect_report as db 
             WHERE 
@@ -143,6 +144,7 @@ class daily_report{
                     
                 $total[$m1]['data'][$m2]['defect_code'] = $row['defect_code'] ; 
                 $total[$m1]['data'][$m2]['defect_name'] = $row['defect_name'] ; 
+                $total[$m1]['data'][$m2]['df_jp_name']  = $row['df_jp_name'] ; 
                 $total[$m1]['data'][$m2]['ng_qty']      = $row['ng_qty'] ; 
                 $total[$m1]['data'][$m2]['ok_return']   = $row['ok_return'] ; 
                 $total[$m1]['data'][$m2]['result']      = $row['result'] ; 
