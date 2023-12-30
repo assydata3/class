@@ -33,6 +33,16 @@ class conn_db{
       return $connect ; 
    }
 
+
+   public function conn_assy2_2(){
+      $host = self::host_local ; 
+      $user = self::local_admin ; 
+      $pass = self::local_pass ;
+      $db = 'assy_2' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
+      return $connect ; 
+   }
+
    public function conn_budget(){
       $connect = mysqli_connect('localhost','root','','budget'); 
       return $connect ; 
@@ -44,7 +54,11 @@ class conn_db{
    }
 
    public function conn_convert(){
-      $connect = mysqli_connect('localhost','root','','convert'); 
+      $host = self::host_assy3 ; 
+      $user = self::assy3_user ; 
+      $pass = self::assy3_pass ;
+      $db = 'convert_data' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
       return $connect ; 
    }
 
@@ -142,7 +156,11 @@ class conn_db{
 
    
    public function conn_pchart(){
-      $connect = mysqli_connect('localhost','root','','pchart'); 
+      $host = self::host_assy3 ; 
+      $user = self::assy3_user ; 
+      $pass = self::assy3_pass ;
+      $db = 'pchart' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
       return $connect ; 
    }
 

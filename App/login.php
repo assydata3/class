@@ -7,43 +7,57 @@ use Connect\connect\conn_db ;
 
 class login{
 
-   public function  require_login($url_login){
-      $infor = array() ; 
-      ob_start();
-      session_start();
-      $path_name   = $_SERVER['REQUEST_URI']; 
-      if(!isset($_SESSION['is_login'])){
-         header("Location: $url_login?path=$path_name");  
-      }
-      else{
-         $user = $_SESSION['user_login'];
-         $infor['user'] = $user ; 
-      }
-      return $infor ; 
-   }
-
-
-   public function  require_login_level($url_login,$level){
+   public function  require_login($url_login,$level_check){
+           
       $host = $_SERVER['HTTP_HOST'] ; 
       $current_domain = "http://$host";
-      $infor = array() ; 
-
+      $infor = array() ;
+      $path_name = $_SERVER['REQUEST_URI']; 
 
       ob_start();
       session_start();
-      $path_name   = $_SERVER['REQUEST_URI']; 
+
+
       if(!isset($_SESSION['is_login'])){
          header("Location: $url_login?path=$path_name");  
       }
       else{
+        
          $user = $_SESSION['user_login'];
+         $infor['user'] = $user ; 
          $user_level = $_SESSION['level'];
-         if($user_level > $level ){
-            header("Location: $current_domain/deny_access.php") ; 
+         $infor['level'] = $user_level ; 
+         if($level_check !== ''){
+            if($user_level > $level_check ){
+               header("Location: $current_domain/deny_access.php") ; 
+            }
          }
       }
       return $infor ; 
    }
+
+
+   // public function  require_login_level($url_login,$level){
+   //    $host = $_SERVER['HTTP_HOST'] ; 
+   //    $current_domain = "http://$host";
+   //    $infor = array() ; 
+
+
+   //    ob_start();
+   //    session_start();
+   //    $path_name   = $_SERVER['REQUEST_URI']; 
+   //    if(!isset($_SESSION['is_login'])){
+   //       header("Location: $url_login?path=$path_name");  
+   //    }
+   //    else{
+   //       $user = $_SESSION['user_login'];
+   //       $user_level = $_SESSION['level'];
+   //       if($user_level > $level ){
+   //          header("Location: $current_domain/deny_access.php") ; 
+   //       }
+   //    }
+   //    return $infor ; 
+   // }
 
 
    
@@ -77,7 +91,7 @@ class login{
               $message = '' ; 
               $_SESSION['is_login'] = TRUE;
 			     $_SESSION['user_login'] = $user; 
-              $_SESSION['level'] = $user_level; 
+              $_SESSION['level'] = (int)$user_level; 
           }
           else {
              $message   = "Tên đăng nhập hoặc mật khẩu không chính xác" ; 
@@ -86,8 +100,8 @@ class login{
        }
        
        $result = array() ; 
-       $result['status']       = $status  ;
-       $result['message']      = $message;
+       $result['status'] = $status  ;
+       $result['message'] = $message;
        return $result ;
     }
 

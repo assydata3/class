@@ -12,14 +12,14 @@ class daily_report{
         $sql = "SELECT no_all,no_1,area,line,model,pro_date,plan,actual, 
         (SELECT sum(sub_total_plan) FROM daily_production_report WHERE( (pro_date BETWEEN '$date_start' and '$date_current') and area = db.area  and area =  db.area and model = db.model )   ) as sub_total_plan, 
         (SELECT sum(sub_total_actual) FROM daily_production_report WHERE( (pro_date BETWEEN '$date_start' and '$date_current') and area = db.area  and area =  db.area and model = db.model )   ) as sub_total_actual, 
-        plan-actual as diff_plan,
-        sub_total_plan - sub_total_actual as diff_sub_plan, 
-        plan/actual*100  as plan_finish , 
-        sub_total_plan/sub_total_actual*100  as sub_plan_finish,
+        actual - plan as diff_plan,
+        sub_total_actual - sub_total_plan  as diff_sub_plan, 
+        round(actual/plan*100,2) as plan_finish , 
+        round(sub_total_actual/sub_total_plan*100,2) as sub_plan_finish,
         date_compensate, 
-        time_plan_1,qty_plan_1,time_actual_1,qty_actual_1,qty_plan_1/qty_actual_1*100 as plan_1_finish,
-        time_plan_2,qty_plan_2,time_actual_2,qty_actual_2,qty_plan_2/qty_actual_2*100 as plan_2_finish,
-        time_plan_3,qty_plan_3,time_actual_3,qty_actual_3,qty_plan_3/qty_actual_3*100 as plan_3_finish,
+        time_plan_1,qty_plan_1,time_actual_1,qty_actual_1,round(qty_actual_1/qty_plan_1*100,2) as plan_1_finish,
+        time_plan_2,qty_plan_2,time_actual_2,qty_actual_2,round(qty_actual_2/qty_plan_2*100,2) as plan_2_finish,
+        time_plan_3,qty_plan_3,time_actual_3,qty_actual_3,round(qty_actual_3/qty_plan_3*100,2) as plan_3_finish,
         process_code,change_point, abnormal,reason,countermeasure,pctp,pic,dead_line
         FROM daily_production_report as db
         WHERE pro_date like '$date_current'
@@ -30,17 +30,26 @@ class daily_report{
         while( $row = mysqli_fetch_array($result) ){
             $k++ ; 
             $data[$k]['no_all'] = $row['no_all'] ;
+            $area               = $row['area'] ;
 
             $no_1 = $row['no_1'] ;
-            if(($no_1 >= 901) && ($no_1 <= 999)) $line_color = '#53d5d3';
-			if(($no_1 >= 801) && ($no_1 <= 899)) $line_color = '#55d553';
-			if(($no_1 >= 701) && ($no_1 <= 799)) $line_color = '#FFEB3B';
-			if(($no_1 >= 601) && ($no_1 <= 699)) $line_color = '#f16ff3ab';
-			if(($no_1 >= 501) && ($no_1 <= 599)) $line_color = '#b3b9ffab';
+            // if(($no_1 >= 901) && ($no_1 <= 999)) $line_color = '#53d5d3';
+			// if(($no_1 >= 801) && ($no_1 <= 899)) $line_color = '#55d553';
+			// if(($no_1 >= 701) && ($no_1 <= 799)) $line_color = '#FFEB3B';
+			// if(($no_1 >= 601) && ($no_1 <= 699)) $line_color = '#f16ff3ab';
+			// if(($no_1 >= 501) && ($no_1 <= 599)) $line_color = '#b3b9ffab';
+
+
+            if($area == 'MAIN LINE')  $line_color = '#53d5d3';
+			if($area == 'SUB LINE 1') $line_color = '#55d553';
+			if($area == 'SUB LINE 2') $line_color = '#FFEB3B';
+			if($area == 'SUB LINE 3') $line_color = '#f16ff3ab';
+			if($area == 'SUB LINE 4') $line_color = '#b3b9ffab';
+            
 
             $data[$k]['line_color']       = $line_color ;
             $data[$k]['no_1']             = $no_1;
-            $data[$k]['area']             = $row['area'] ;
+            $data[$k]['area']             = $area ;
             $data[$k]['line']             = $row['line'] ;
             $data[$k]['model']            = $row['model'];
             $data[$k]['plan']             = $row['plan'] ;
@@ -48,8 +57,14 @@ class daily_report{
             $data[$k]['sub_total_plan']   = $row['sub_total_plan'] ;
             $data[$k]['sub_total_actual'] = $row['sub_total_actual'] ;
             
-            $data[$k]['diff_plan']            = $row['diff_plan'] ;
-            $data[$k]['diff_sub_plan']        = $row['diff_sub_plan'] ;
+            $diff_plan = $row['diff_plan'] ; 
+            if($diff_plan < 0) {$diff_plan_color = 'red'; } else {$diff_plan_color = '';}
+            $diff_sub_plan = $row['diff_sub_plan'] ; 
+            if($diff_sub_plan < 0) {$diff_sub_plan_color = 'red'; } else {$diff_sub_plan_color = '';}
+            $data[$k]['diff_plan']            = $diff_plan;
+            $data[$k]['diff_plan_color']      = $diff_plan_color;
+            $data[$k]['diff_sub_plan']        = $diff_sub_plan ;
+            $data[$k]['diff_sub_plan_color']  = $diff_sub_plan_color ;
             $data[$k]['plan_finish']          = $row['plan_finish'] ;
             $data[$k]['sub_plan_finish']      = $row['sub_plan_finish'] ;
             $data[$k]['date_compensate']      = $row['date_compensate'] ;
@@ -124,15 +139,16 @@ class daily_report{
                 if($m2 == 1){
                   
                     $infor = array() ; 
+                    $area    = $row['area'] ; 
 
                     $no1_show_1 = $row['no_1'] ; 
-                    if(($no1_show_1 >= 901) && ($no1_show_1 <= 999)) $line_color = '#53d5d3';
-                    if(($no1_show_1 >= 801) && ($no1_show_1 <= 899)) $line_color = '#55d553';
-                    if(($no1_show_1 >= 701) && ($no1_show_1 <= 799)) $line_color = '#FFEB3B';
-                    if(($no1_show_1 >= 601) && ($no1_show_1 <= 699)) $line_color = '#f16ff3ab';
-                    if(($no1_show_1 >= 501) && ($no1_show_1 <= 599)) $line_color = '#b3b9ffab';
+                    if($area == 'MAIN LINE')  $line_color = '#53d5d3';
+                    if($area == 'SUB LINE 1') $line_color = '#55d553';
+                    if($area == 'SUB LINE 2') $line_color = '#FFEB3B';
+                    if($area == 'SUB LINE 3') $line_color = '#f16ff3ab';
+                    if($area == 'SUB LINE 4') $line_color = '#b3b9ffab';
                 
-                    $infor['area']    = $row['area'] ; 
+                    $infor['area']    = $area ; 
                     $infor['line']    = $row['line'] ;
                     $infor['model']   = $row['model'] ;
                     $infor['tong_ng'] = $row['tong_ng'] ;

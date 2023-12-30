@@ -92,6 +92,14 @@ class date_data{
        $date_diff   = $this->index2date($index_diff) ;
        return $date_diff ;
     }
+
+
+    #### tính toán ngày theo lịch thông thường 
+    public function date_add($date,$index){
+        $parameter = "$index day" ; 
+        $date2 = date("Y-m-d", strtotime($date.$parameter)) ;
+        return $date2 ;
+    }
    
 } 
 
@@ -108,4 +116,9 @@ class date_data{
 // echo date_create('2023-12-21')
 // // ->modify('first day of this month')
 // ->format('d/M/Y');
+
+// $date1 = '2023-12-21' ; 
+// $date2 = $data->date_add($date1,1-10) ; 
+// echo $date2 ; 
+ 
 ?>

@@ -13,18 +13,17 @@ use Connect\connect\conn_db;
 
 
 class mailer {
-
-
+    
    #### Setting 
     
     #### 2.MAS-V Mail 
     // private $mail_system_secure    = 'tls';
-    // private $mail_system_host      = 'smtp.office365.com';                   //Company : 'smtp.office365.com'          // Gmail : 'smtp.gmail.com'
+    // private $mail_system_host      = 'smtp.office365.com';            //Company : 'smtp.office365.com'          // Gmail : 'smtp.gmail.com'
     // private $mail_system_auth      =  true;
-    // private $mail_system_address   = 'assydata@minebea-as.com';           // Company : 'assydata@minebea-as.com';   // Gmail : 'assydata.mas@gmail.com'
+    // private $mail_system_address   = 'assydata@minebea-as.com';       // Company : 'assydata@minebea-as.com';   // Gmail : 'assydata.mas@gmail.com'
     // private $mail_system_password  = 'hondalock@123';                 // Company : 'hondalock@123';             // Gmail : 'dnxbaalemsabfqxm'
-    // private $mail_system_port      =  587;                               // Company :  25                          // Gmail :  587
-    // private $mail_system_set_name  = 'assydata@minebea-as.com';           // Company : 'assydata@minebea-as.com'    // Gmail : 'assydata.mas@gmail.com'
+    // private $mail_system_port      =  587;                            // Company :  25                          // Gmail :  587
+    // private $mail_system_set_name  = 'assydata@minebea-as.com';       // Company : 'assydata@minebea-as.com'    // Gmail : 'assydata.mas@gmail.com'
     // private $mail_system_set_title = 'Assy_data System' ;
 
     ### 1.GMAIL 
@@ -47,6 +46,10 @@ class mailer {
     public $footer_system_2 = "<br>=========================================================<br>
     đây là mail gửi tử hệ thống quản lý dữ liệu Assy<br>
     Nếu có thông tin gì cần góp ý thì vui lòng gửi lại cho ban quản trị hệ thống để chúng tôi tiếp tục cải tiến";
+
+
+    public $footer_system_3 = "<br>=========================================================<br>
+    đây là hệ thống mail gửi tự động nằm trong hệ thống quản lý dữ liệu của assy";
   
 
     public $footer_kaizen = "<br>=======================================================<br>
@@ -137,11 +140,14 @@ class mailer {
    
 
    #### MAIN FUNCTION 
-   public function  sent_mail($title,$content,$list_to,$list_cc,$list_bcc,$list_attach){
+   public function  sent_mail($title,$content,$list_to,$list_cc,$list_bcc,$list_attach,$show){
     $mail = new PHPMailer(true);
     try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        if($show==true){
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER; 
+        }
+                             //Enable verbose debug output
         $mail->isSMTP();                                            //Send using SMTP
             
         // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;        //Enable implicit TLS encryption
@@ -190,6 +196,9 @@ class mailer {
         // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
     
         $mail->send();
+        
+        
+        
         echo 'Message has been sent';
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
