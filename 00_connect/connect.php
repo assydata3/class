@@ -22,6 +22,16 @@ class conn_db{
       return $connect ; 
    }
 
+   public function conn_assy_sub()
+   {
+      $host = self::host_local ; 
+      $user = self::local_admin ; 
+      $pass = self::local_pass ;
+      $db = 'assy' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
+      return $connect ; 
+   }
+
 
 
    public function conn_assy2(){
@@ -85,7 +95,7 @@ class conn_db{
       $user = self::assy3_user ; 
       $pass = self::assy3_pass ;
       $db = 'edp_data' ; 
-      $connect = mysqli_connect($host ,$user,$pass,$db); 
+      $connect = mysqli_connect($host ,$user,$pass,$db);    
       return $connect ; 
    }
 
@@ -192,6 +202,9 @@ class conn_db{
  
    }
 
+
+  
+
    public function conn_test(){
       $host = self::host_assy3 ; 
       $user = self::assy3_user ; 
@@ -203,6 +216,18 @@ class conn_db{
    }
 
 
+   public function conn_test2(){
+      $host = self::host_local ; 
+      $user = self::local_admin ; 
+      $pass = self::local_pass ;
+      $db = 'test' ; 
+      $connect = mysqli_connect($host ,$user,$pass,$db); 
+
+      return $connect ; 
+   }
+
+
+
    public function conn_test8(){
       $connect = mysqli_connect('localhost','root','','test8'); 
       return $connect ; 
@@ -210,6 +235,12 @@ class conn_db{
 
    public function conn_trainning(){
       $connect = mysqli_connect('localhost','root','','trainning'); 
+      return $connect ; 
+   }
+
+
+   public function conn_productivity(){
+      $connect = mysqli_connect('localhost','root','','productivity'); 
       return $connect ; 
    }
 }

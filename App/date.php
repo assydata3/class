@@ -4,6 +4,8 @@ require_once __DIR__.'/../00_connect/connect.php' ;
 use Connect\connect\conn_db;
 
 class date_data{
+
+    ### tìm ngày đầu tiên trong tháng 
     public function first_day($date){
         $fist_day = date_create($date)
         ->modify('first day of this month')
@@ -13,6 +15,7 @@ class date_data{
     }
 
 
+    #### Tìm ngày cuối tháng từ ngày nhập vào 
     public function last_day($date){
         $fist_day = date_create($date)
         ->modify('last day of this month')
@@ -20,7 +23,7 @@ class date_data{
         return $fist_day;
     }
 
-
+    #### Tìm mảng dữ liệu thông tin ngày giờ hiện tại . 
     public function current_datetime() {
         date_default_timezone_set('Asia/ho_chi_minh');
         $date_full = date('Y-m-d H:i:s');
@@ -49,7 +52,7 @@ class date_data{
         return $date_array ; 
     }
 
-
+    #### Tìm số index từ ngày nhập vào . 
     public function date_company_index($date_check){
       $connection = new conn_db() ; 
       $connect = $connection->conn_test() ; 
@@ -72,7 +75,8 @@ class date_data{
       return $index ;   
   
     } 
-
+    
+    ### Tìm Ngày từ số index all nhập vào
     public function index2date($index_all){  
         $connection = new conn_db() ;
         $connect = $connection->conn_test() ;
@@ -84,7 +88,7 @@ class date_data{
         return $date_find ;
     }
 
-    ### tim ngay cach so ngay hien tai index gia tri 
+    ### Tính ngày và khoảng cách từ index nhập vào
     public function date_plus($date,$index){
        $date_infor = $this->date_company_index($date) ;
        $index_find  =  $date_infor['index_all'] ; 
@@ -100,11 +104,39 @@ class date_data{
         $date2 = date("Y-m-d", strtotime($date.$parameter)) ;
         return $date2 ;
     }
+
+
+    #### Tìm khoảng cách từ 2 ngày nhập vào theo lịch công ty 
+    public function total_date_calc($date1, $date2){
+        $connection = new conn_db() ;
+        $connect = $connection->conn_test() ;
+		$sql = "SELECT SUM(index_one) as sum FROM calenda WHERE(start >= '$date1' and start <= '$date2')";		
+		$result = mysqli_query($connect, $sql);
+		$row = mysqli_fetch_assoc($result);
+		$total_date = $row['sum'];
+		return $total_date;
+	}
+
+
+    public function diff_time($start_time,$end_time){
+        $diff_array = array() ; 
+        $originalTime = new DateTimeImmutable($start_time."Asia/ho_chi_minh");
+        $targedTime   = new DateTimeImmutable($end_time."Asia/ho_chi_minh");
+        $interval = $originalTime->diff($targedTime);
+        $data = $interval->format("%H:%I:%S (Full days: %a)");
+        $diff_array['total'] = $data ; 
+        $diff_array['hour'] = $interval->format("%H");
+        return $diff_array ;
+    }
    
 } 
 
 
 // $data = new date_data ; 
+// $time_1 = '2025-12-01 08:30' ; 
+// $time_2 = '2024-01-02 16:30';
+// $diff = $data->diff_time($time_1, $time_2);
+// print_r($diff);
 // $current = $data->current_datetime() ; 
 // print_r($current); 
 

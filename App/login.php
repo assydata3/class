@@ -15,7 +15,7 @@ class login{
       $path_name = $_SERVER['REQUEST_URI']; 
 
       ob_start();
-      session_start();
+      if(!isset($_SESSION)){session_start();}
 
 
       if(!isset($_SESSION['is_login'])){
@@ -25,8 +25,10 @@ class login{
         
          $user = $_SESSION['user_login'];
          $infor['user'] = $user ; 
-         $user_level = $_SESSION['level'];
+
+         if(isset($_SESSION['level'])) {$user_level = $_SESSION['level'];} else {$user_level = '' ; }
          $infor['level'] = $user_level ; 
+
          if($level_check !== ''){
             if($user_level > $level_check ){
                header("Location: $current_domain/deny_access.php") ; 
@@ -68,6 +70,7 @@ class login{
        ### Xóa dữ liệu Session cũ 
        unset($_SESSION['is_login']);
 	    unset($_SESSION['user_login']);
+       unset($_SESSION['level']);
        
        $connection = new conn_db ;
        $connect = $connection->conn_assy2() ; 
@@ -104,6 +107,56 @@ class login{
        $result['message'] = $message;
        return $result ;
     }
+
+
+
+
+    public function check_login_kaizen($user,$pass){
+      $current_host = $_SERVER['HTTP_HOST'];
+      ob_start();
+      session_start();
+      ### Xóa dữ liệu Session cũ 
+      unset($_SESSION['is_login']);
+      unset($_SESSION['user_login']);
+      unset($_SESSION['level']);
+      
+      $connection = new conn_db ;
+      $connect = $connection->conn_kaizen() ; 
+      
+      if($user == ''){
+         $message = "Không được để trống tên đăng nhập" ; 
+         $status = false ; 
+      }
+      else if($pass == ''){
+       $message = "Không được để trống mật khẩu" ; 
+         $status = false ; 
+      }
+      else {
+         $sql = "SELECT * FROM user_tb WHERE(user like '$user')";
+         $result = mysqli_query($connect, $sql);
+         $row = mysqli_fetch_assoc($result);
+         $pass_find  = $row['password'] ; 
+         $user_level = $row['level'] ; 
+
+         if($pass_find == $pass){
+             $status  = True ; 
+             $message = '' ; 
+             $_SESSION['is_login'] = TRUE;
+             $_SESSION['user_login'] = $user; 
+             $_SESSION['level'] = (int)$user_level; 
+
+         }
+         else {
+            $message   = "Tên đăng nhập hoặc mật khẩu không chính xác" ; 
+            $status    = false ; 
+         }
+      }
+      
+      $result = array() ; 
+      $result['status'] = $status  ;
+      $result['message'] = $message;
+      return $result ;
+   }
 
 
 

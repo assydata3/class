@@ -84,7 +84,74 @@ class hr_data{
       return $shift_summary ;
    }
   
+   
+   #### List danh sách theo các đặc thù nhân sự . 
+   public function list_hr_type($type,$search){
+      $connection = new conn_db ; 
+      $connect = $connection->conn_hr();
+      $list = array() ; $k = 0 ; 
 
+      $sql = "SELECT * 
+      FROM common_info 
+      INNER JOIN line_info ON common_info.code = line_info.code 
+      INNER JOIN personal_info ON common_info.code = personal_info.code 
+      WHERE (common_info.working_status like '$type' 
+      and (line_info.area like '%$search%' or line_info.pro_sys_name like '%$search%' or common_info.code like '%$search%' or common_info.fullname like '%$search%')) 
+      order by stt asc" ; 
+      
+
+      ### kiểm tra các điều kiện
+      if($type == "After born")     { $start_feild = "baby_hol_from" ; $end_feild = "baby_hol_to";  }
+      if($type == "maternity leave"){ $start_feild = "baby_hol_from" ; $end_feild = "baby_hol_to";  }
+      if($type == "pregnant"){ $start_feild = "baby_hol_from" ; $end_feild = "baby_hol_to";  }
+
+      $result = mysqli_query($connect,$sql); 
+      while($row=mysqli_fetch_array($result)){
+         $k++; 
+         $list[$k]['area']  = $row['area']  ; 
+         $list[$k]['line']  = $row['line']  ; 
+         $list[$k]['code']  = $row['code']  ; 
+         $list[$k]['name']  = $row['fullname']  ; 
+         $list[$k]['start'] = $row[$start_feild]  ; 
+         $list[$k]['end']   = $row[$end_feild]  ; 
+         
+         
+      }
+      $list['count']['value'] = $k ; 
+      return $list ;
+
+
+   }
+
+
+
+   public function list_hr($search){
+      $connection = new conn_db ;   
+      $connect = $connection->conn_hr();
+      $hr_list = array() ; $k = 0  ; 
+    
+      $sql="SELECT * FROM common_info 
+       INNER JOIN line_info ON common_info.code = line_info.code 
+       INNER JOIN personal_info ON common_info.code = personal_info.code 
+       where ((common_info.code like'%$search%' or common_info.fullname like'%$search%' or line_info.pro_sys_name like'%$search%' or personal_info.degree like'%$search%' or common_info.working_status like'%$search%' or common_info.old_code like'%$search%' or common_info.position like'%$search%' or line_info.line like'%$search%') and (common_info.working_status <> 'Leave Job')) 
+       order by stt asc";
+
+      $result = mysqli_query($connect, $sql);
+      while($row=mysqli_fetch_array($result)){
+         $k++ ; 
+         $hr_list[$k]["code"]        = $row["code"] ;
+         $hr_list[$k]["name"]        = $row["fullname"] ;
+         $hr_list[$k]["position"]    = $row["position"] ;
+         $hr_list[$k]["wk_status"]   = $row["working_status"] ;
+         $hr_list[$k]["old_code"]    = $row["old_code"] ;
+         $hr_list[$k]["degree"]      = $row["degree"] ;
+         $hr_list[$k]["birthday"]    = $row["birthday"] ;
+         $hr_list[$k]["line"]        = $row["line"] ;
+
+      }
+      $hr_list["count"]["value"] = $k ;   
+      return $hr_list ;
+   }
    
 
 

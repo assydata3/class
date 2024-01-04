@@ -8,6 +8,8 @@ class const_data{
 
    const assy_private  = 'O:/8.ASSY' ; 
 
+   const admin_office  = 'van_le' ; 
+
 }
 
 

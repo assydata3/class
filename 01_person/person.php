@@ -4,7 +4,18 @@ require_once  __DIR__.'/../00_connect/00_const.php';
 use Connect\connect\conn_db;
 
 class person{
-   
+    
+
+    public function check_name($code){
+        $connection  = new conn_db() ; 
+        $conn = $connection -> conn_hr() ; 
+        $sql = "SELECT fullname  FROM `personal_info` as info   WHERE (info.code = '$code')"; 
+        $result = mysqli_query($conn,$sql);
+        $row = mysqli_fetch_array($result);
+        $name = $row['fullname'] ; 
+        return $name ;
+    }
+
     public function person_infor($code){
         $infor = array() ; 
         $connection  = new conn_db() ; 
@@ -56,8 +67,28 @@ class person{
         $infor['area']       =  $row['area'] ;
         $infor['pro_sys_name'] =  $row['pro_sys_name'] ;
         $infor['main_process'] =  $row['main_process'] ;
+        $infor['request_op_date'] =  $row['request_op_date'] ;
 
         return $infor ;  
+    }
+
+    public function warning_list($code){
+        $year_search = date('Y') ; 
+        $connection  = new conn_db() ; 
+        $connect = $connection -> conn_assy() ;
+        $warning = array() ; $k = 0 ; 
+
+        if ($code !== '') { $sql = "SELECT * FROM assy.warning where (code_vp like '$code' and date like '$year_search%')"; }
+        else { $sql = "SELECT * FROM assy.warning where (like '$year_search%')";}
+        $sql = "SELECT * FROM assy.warning where (code_vp like '$code' and date like '$year_search%')";
+        $result_warning = mysqli_query($connect, $sql);
+        if($result_warning) {
+            while ($row = mysqli_fetch_assoc($result_warning)){
+             $k++ ; 
+            }
+        }
+        else {$k = 0 ; }
+        $warning['count'] = $k ; 
     }
 }
 
